@@ -5,6 +5,7 @@ import logging
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 
+
 from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.tools.translate import _
 from odoo.tools import email_re, email_split
@@ -44,7 +45,8 @@ CRM_LEAD_FIELDS_TO_MERGE = [
     'email_cc',
     'website',
     'partner_name',
-    'date_deadline']
+    'date_deadline'
+    ]
 
 
 class Lead(models.Model):
@@ -101,6 +103,8 @@ class Lead(models.Model):
     date_last_stage_update = fields.Datetime(string='Last Stage Update', index=True, default=fields.Datetime.now)
     date_conversion = fields.Datetime('Conversion Date', readonly=True)
 
+    
+
     # Messaging and marketing
     message_bounce = fields.Integer('Bounce', help="Counter of the number of bounced emails for this contact", default=0)
 
@@ -118,6 +122,10 @@ class Lead(models.Model):
     company_currency = fields.Many2one(string='Currency', related='company_id.currency_id', readonly=True, relation="res.currency")
     user_email = fields.Char('User Email', related='user_id.email', readonly=True)
     user_login = fields.Char('User Login', related='user_id.login', readonly=True)
+    
+    
+    
+   
 
     # Fields for address, due to separation from crm and res.partner
     street = fields.Char('Street')
@@ -136,7 +144,7 @@ class Lead(models.Model):
 
     date_reminder = fields.Date('Reminder Date', help="Date Reminder !")
     active_reminder = fields.Boolean('Active Reminder', default=False, track_visibility=True)
-    
+
     _sql_constraints = [
         ('check_probability', 'check(probability >= 0 and probability <= 100)', 'The probability of closing the deal should be between 0% and 100%!')
     ]
@@ -255,6 +263,19 @@ class Lead(models.Model):
     def _onchange_partner_id(self):
         values = self._onchange_partner_id_values(self.partner_id.id if self.partner_id else False)
         self.update(values)
+    
+    @api.model
+    def delay_lead(self):
+        var=datetime.now().date()
+        res=self.date_deadline
+        r=res - var
+        p= r.days
+        if  p < 0:
+            
+            return True
+        
+       
+
 
     @api.model
     def _onchange_user_values(self, user_id):
@@ -322,6 +343,8 @@ class Lead(models.Model):
 
         if vals.get('user_id') and 'date_open' not in vals:
             vals['date_open'] = fields.Datetime.now()
+        
+        #print(vals['date_deadline'])
 
         partner_id = vals.get('partner_id') or context.get('default_partner_id')
         onchange_values = self._onchange_partner_id_values(partner_id)
@@ -1267,6 +1290,8 @@ class Lead(models.Model):
             'template': '/crm/static/xls/crm_lead.xls'
         }]
 
+     
+
 
 class Tag(models.Model):
 
@@ -1287,3 +1312,7 @@ class LostReason(models.Model):
 
     name = fields.Char('Name', required=True, translate=True)
     active = fields.Boolean('Active', default=True)
+
+
+
+

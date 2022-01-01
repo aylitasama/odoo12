@@ -20,6 +20,9 @@
         'web_tour',
         'contacts',
         'digest',
+        
+        
+        
     ],
     'data': [
         'security/crm_security.xml',
@@ -33,6 +36,9 @@
         'wizard/crm_lead_lost_views.xml',
         'wizard/crm_lead_to_opportunity_views.xml',
         'wizard/crm_merge_opportunities_views.xml',
+        'wizard/create_newLead_view.xml',
+        
+        
 
         'views/crm_templates.xml',
         'views/res_config_settings_views.xml',
@@ -43,8 +49,14 @@
         'views/res_partner_views.xml',
         'report/crm_activity_report_views.xml',
         'report/crm_opportunity_report_views.xml',
+        'report/report_action_retard.xml',
+        'report/action_retard.xml',
         'views/crm_team_views.xml',
         'views/digest_views.xml',
+        'views/customer.xml',
+        'views/template_action_retard.xml',
+        'views/template_list_doc.xml',
+        
     ],
     'demo': [
         'data/crm_demo.xml',

@@ -224,11 +224,15 @@ class Lead(models.Model):
             partner_name = partner.parent_id.name
             if not partner_name and partner.is_company:
                 partner_name = partner.name
-
+            
+            contact_info = self.env['crm.lead'].search([('partner_id', '=', partner_id), ('contact_name', '!=', False)], order='id desc', limit=1)
+            company_contact = contact_info.contact_name if contact_info.contact_name else False
+            company_title   = partner.title.id if contact_info.title.id == False else contact_info.title.id
+            
             return {
                 'partner_name': partner_name,
-                'contact_name': partner.name if not partner.is_company else False,
-                'title': partner.title.id,
+                'contact_name': partner.name if not partner.is_company else company_contact,
+                'title': company_title,
                 'street': partner.street,
                 'street2': partner.street2,
                 'city': partner.city,

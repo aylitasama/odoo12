@@ -3,6 +3,8 @@
 
 from odoo import api, fields, models
 
+from datetime import datetime
+
 
 class Partner(models.Model):
 
@@ -13,7 +15,9 @@ class Partner(models.Model):
     meeting_ids = fields.Many2many('calendar.event', 'calendar_event_res_partner_rel', 'res_partner_id', 'calendar_event_id', string='Meetings', copy=False)
     opportunity_count = fields.Integer("Opportunity", compute='_compute_opportunity_count')
     meeting_count = fields.Integer("# Meetings", compute='_compute_meeting_count')
-
+    lead_ids = fields.One2many('crm.lead', 'partner_id', string='Leads',
+        domain=[('type', '=', 'lead'),('date_deadline', '>', datetime.today())])
+    
     @api.model
     def default_get(self, fields):
         rec = super(Partner, self).default_get(fields)
